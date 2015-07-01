@@ -2,26 +2,26 @@
 
 class Spreadsheet_Excel_Reader {
 	// ParseXL definitions
-	const XLS_BIFF8						= 0x0600;
-	const XLS_BIFF7						= 0x0500;
+	const XLS_BIFF8					= 0x0600;
+	const XLS_BIFF7					= 0x0500;
 	const XLS_WorkbookGlobals			= 0x0005;
-	const XLS_Worksheet					= 0x0010;
+	const XLS_Worksheet				= 0x0010;
 	
 	// record identifiers
 	const XLS_Type_FORMULA				= 0x0006;
 	const XLS_Type_FORMULA2				= 0x0406;
-	const XLS_Type_EOF					= 0x000a;
+	const XLS_Type_EOF				= 0x000a;
 	const XLS_Type_PROTECT				= 0x0012;
-	const XLS_Type_OBJECTPROTECT		= 0x0063;
+	const XLS_Type_OBJECTPROTECT			= 0x0063;
 	const XLS_Type_SCENPROTECT			= 0x00dd;
 	const XLS_Type_PASSWORD				= 0x0013;
 	const XLS_Type_HEADER				= 0x0014;
 	const XLS_Type_FOOTER				= 0x0015;
 	const XLS_Type_EXTERNSHEET			= 0x0017;
 	const XLS_Type_DEFINEDNAME			= 0x0018;
-	const XLS_Type_VERTICALPAGEBREAKS	= 0x001a;
-	const XLS_Type_HORIZONTALPAGEBREAKS	= 0x001b;
-	const XLS_Type_NOTE					= 0x001c;
+	const XLS_Type_VERTICALPAGEBREAKS		= 0x001a;
+	const XLS_Type_HORIZONTALPAGEBREAKS		= 0x001b;
+	const XLS_Type_NOTE				= 0x001c;
 	const XLS_Type_SELECTION			= 0x001d;
 	const XLS_Type_DATEMODE				= 0x0022;
 	const XLS_Type_EXTERNNAME			= 0x0023;
@@ -29,14 +29,14 @@ class Spreadsheet_Excel_Reader {
 	const XLS_Type_RIGHTMARGIN			= 0x0027;
 	const XLS_Type_TOPMARGIN			= 0x0028;
 	const XLS_Type_BOTTOMMARGIN			= 0x0029;
-	const XLS_Type_PRINTGRIDLINES		= 0x002b;
+	const XLS_Type_PRINTGRIDLINES			= 0x002b;
 	const XLS_Type_FILEPASS				= 0x002f;
-	const XLS_Type_FONT					= 0x0031;
+	const XLS_Type_FONT				= 0x0031;
 	const XLS_Type_CONTINUE				= 0x003c;
-	const XLS_Type_PANE					= 0x0041;
+	const XLS_Type_PANE				= 0x0041;
 	const XLS_Type_CODEPAGE				= 0x0042;
 	const XLS_Type_DEFCOLWIDTH 			= 0x0055;
-	const XLS_Type_OBJ					= 0x005d;
+	const XLS_Type_OBJ				= 0x005d;
 	const XLS_Type_COLINFO				= 0x007d;
 	const XLS_Type_IMDATA				= 0x007f;
 	const XLS_Type_SHEETPR				= 0x0081;
@@ -44,45 +44,45 @@ class Spreadsheet_Excel_Reader {
 	const XLS_Type_VCENTER				= 0x0084;
 	const XLS_Type_SHEET				= 0x0085;
 	const XLS_Type_PALETTE				= 0x0092;
-	const XLS_Type_SCL					= 0x00a0;
+	const XLS_Type_SCL				= 0x00a0;
 	const XLS_Type_PAGESETUP			= 0x00a1;
 	const XLS_Type_MULRK				= 0x00bd;
 	const XLS_Type_MULBLANK				= 0x00be;
 	const XLS_Type_DBCELL				= 0x00d7;
-	const XLS_Type_XF					= 0x00e0;
+	const XLS_Type_XF				= 0x00e0;
 	const XLS_Type_MERGEDCELLS			= 0x00e5;
-	const XLS_Type_MSODRAWINGGROUP		= 0x00eb;
+	const XLS_Type_MSODRAWINGGROUP			= 0x00eb;
 	const XLS_Type_MSODRAWING			= 0x00ec;
-	const XLS_Type_SST					= 0x00fc;
+	const XLS_Type_SST				= 0x00fc;
 	const XLS_Type_LABELSST				= 0x00fd;
 	const XLS_Type_EXTSST				= 0x00ff;
 	const XLS_Type_EXTERNALBOOK			= 0x01ae;
-	const XLS_Type_DATAVALIDATIONS		= 0x01b2;
-	const XLS_Type_TXO					= 0x01b6;
+	const XLS_Type_DATAVALIDATIONS			= 0x01b2;
+	const XLS_Type_TXO				= 0x01b6;
 	const XLS_Type_HYPERLINK			= 0x01b8;
-	const XLS_Type_DATAVALIDATION		= 0x01be;
+	const XLS_Type_DATAVALIDATION			= 0x01be;
 	const XLS_Type_DIMENSION			= 0x0200;
 	const XLS_Type_BLANK				= 0x0201;
 	const XLS_Type_NUMBER				= 0x0203;
 	const XLS_Type_LABEL				= 0x0204;
 	const XLS_Type_BOOLERR				= 0x0205;
 	const XLS_Type_STRING				= 0x0207;
-	const XLS_Type_ROW					= 0x0208;
+	const XLS_Type_ROW				= 0x0208;
 	const XLS_Type_INDEX				= 0x020b;
 	const XLS_Type_ARRAY				= 0x0221;
-	const XLS_Type_DEFAULTROWHEIGHT 	= 0x0225;
+	const XLS_Type_DEFAULTROWHEIGHT 		= 0x0225;
 	const XLS_Type_WINDOW2				= 0x023e;
-	const XLS_Type_RK					= 0x007e;
-	const XLS_Type_RK2					= 0x027e;
+	const XLS_Type_RK				= 0x007e;
+	const XLS_Type_RK2				= 0x027e;
 	const XLS_Type_STYLE				= 0x0293;
 	const XLS_Type_FORMAT				= 0x041e;
 	const XLS_Type_SHAREDFMLA			= 0x04bc;
-	const XLS_Type_BOF					= 0x0809;
-	const XLS_Type_SHEETPROTECTION		= 0x0867;
-	const XLS_Type_RANGEPROTECTION		= 0x0868;
+	const XLS_Type_BOF				= 0x0809;
+	const XLS_Type_SHEETPROTECTION			= 0x0867;
+	const XLS_Type_RANGEPROTECTION			= 0x0868;
 	const XLS_Type_SHEETLAYOUT			= 0x0862;
 	const XLS_Type_XFEXT				= 0x087d;
-	const XLS_Type_PAGELAYOUTVIEW		= 0x088b;
+	const XLS_Type_PAGELAYOUTVIEW			= 0x088b;
 	const XLS_Type_UNKNOWN				= 0xffff;
 	
 	// Encryption type
@@ -175,13 +175,13 @@ class Spreadsheet_Excel_Reader {
 				$code = self::_GetInt2d($this->_data, $this->_pos);
 				
 				switch ($code) {
-					case self::XLS_Type_SST:			$this->_readSst();				break;
+					case self::XLS_Type_SST:		$this->_readSst();			break;
 					case self::XLS_Type_CODEPAGE:		$this->_readCodepage();			break;
 					case self::XLS_Type_DATEMODE:		$this->_readDateMode();			break;
-					case self::XLS_Type_FORMAT:			$this->_readFormat();			break;
-					case self::XLS_Type_XF:				$this->_readXf();				break;
-					case self::XLS_Type_EOF:			$this->_readDefault();			break 2;
-					default:							$this->_readDefault();			break;
+					case self::XLS_Type_FORMAT:		$this->_readFormat();			break;
+					case self::XLS_Type_XF:			$this->_readXf();			break;
+					case self::XLS_Type_EOF:		$this->_readDefault();			break 2;
+					default:				$this->_readDefault();			break;
 				}
 			}
 		}
@@ -194,18 +194,18 @@ class Spreadsheet_Excel_Reader {
 
 			switch ($code) {
 				case self::XLS_Type_RK:
-				case self::XLS_Type_RK2:					$this->_readRk();						break;
+				case self::XLS_Type_RK2:				$this->_readRk();					break;
 				case self::XLS_Type_LABELSST:				$this->_readLabelSst();					break;
-				case self::XLS_Type_MULRK:					$this->_readMulRk();					break;
-				case self::XLS_Type_NUMBER:					$this->_readNumber();					break;
+				case self::XLS_Type_MULRK:				$this->_readMulRk();					break;
+				case self::XLS_Type_NUMBER:				$this->_readNumber();					break;
 				case self::XLS_Type_FORMULA:
 				case self::XLS_Type_FORMULA2:				$this->_readFormula();					break;
 				case self::XLS_Type_BOOLERR:				$this->_readBoolErr();					break;
-				case self::XLS_Type_STRING:					$this->_readString();					break;
+				case self::XLS_Type_STRING:				$this->_readString();					break;
 				case self::XLS_Type_MULBLANK:				$this->_readBlank();					break;
-				case self::XLS_Type_LABEL:					$this->_readLabel();					break;
-				case self::XLS_Type_EOF:					$this->_readDefault();					break 2;
-				default:									$this->_readDefault();					break;
+				case self::XLS_Type_LABEL:				$this->_readLabel();					break;
+				case self::XLS_Type_EOF:				$this->_readDefault();					break 2;
+				default:						$this->_readDefault();					break;
 			}
 		}
 		return $this->_cell;
@@ -225,10 +225,10 @@ class Spreadsheet_Excel_Reader {
 				$code = self::_GetInt2d($this->_data, $this->_pos);
 		
 				switch ($code) {
-					case self::XLS_Type_BOF:	$this->_readBof();			break;
+					case self::XLS_Type_BOF:	$this->_readBof();		break;
 					case self::XLS_Type_SHEET:	$this->_readSheet();		break;
 					case self::XLS_Type_EOF:	$this->_readDefault();		break 2;
-					default:					$this->_readDefault();		break;
+					default:			$this->_readDefault();		break;
 				}
 			}
 		}
@@ -241,7 +241,7 @@ class Spreadsheet_Excel_Reader {
 			'worksheetName'		=> $this->_sheets[$this->curretSheet]['name'],
 			'lastColumnLetter'	=> 'A',
 			'lastColumnIndex'	=> 0,
-			'totalRows'			=> 0,
+			'totalRows'		=> 0,
 			'totalColumns'		=> 0
 		);
 		
@@ -337,13 +337,13 @@ class Spreadsheet_Excel_Reader {
 	private function _loadOLE($file)	{
 		self::_loadClass();
 		$ole = new PHPExcel_Shared_OLERead();				// OLE reader
-		$res = $ole->read($file);							// get excel data
+		$res = $ole->read($file);					// get excel data
 		if ($ole->error) {
 			$this->error = true;
 			return false;
 		}
 		
-		$this->_data = $ole->getStream($ole->workbook);		// Get workbook data: workbook stream + sheet streams
+		$this->_data = $ole->getStream($ole->workbook);			// Get workbook data: workbook stream + sheet streams
 	}
 	
 	private function _getFormatDetail($data, $pos, $value, $column){
@@ -456,7 +456,7 @@ class Spreadsheet_Excel_Reader {
 		$length = self::_GetInt2d($this->_data, $this->_pos + 2);
 		$recordData = substr($this->_data, $this->_pos + 4, $length);
 		
-		$this->_pos += 4 + $length;							// move stream pointer to next record
+		$this->_pos += 4 + $length;				// move stream pointer to next record
 		$substreamType = self::_GetInt2d($recordData, 2);	// offset: 2; size: 2; type of the following data
 		switch ($substreamType) {
 			case self::XLS_WorkbookGlobals:
@@ -490,7 +490,7 @@ class Spreadsheet_Excel_Reader {
 		$recordData = substr($this->_data, $this->_pos + 4, $length);
 		
 		$rec_offset = self::_GetInt4d($this->_data, $this->_pos + 4);	// offset: 0; size: 4; absolute stream position of the BOF record of the sheet
-		$this->_pos += 4 + $length;										// move stream pointer to next record
+		$this->_pos += 4 + $length;					// move stream pointer to next record
 	
 		// offset: 6; size: var; sheet name
 		if ($this->_version == self::XLS_BIFF8) {
@@ -648,20 +648,20 @@ class Spreadsheet_Excel_Reader {
 	 * workbook uses indexes into the list to reference the strings.
 	 **/
 	private function _readSst()	{
-		$pos = 0;												// offset within (spliced) record data
-		$splicedRecordData = $this->_getSplicedRecordData();	// get spliced record data
+		$pos = 0;							// offset within (spliced) record data
+		$splicedRecordData = $this->_getSplicedRecordData();		// get spliced record data
 		$recordData = $splicedRecordData['recordData'];
 		$spliceOffsets = $splicedRecordData['spliceOffsets'];
 	
-		$pos += 4;												// offset: 0; size: 4; total number of strings in the workbook
-		$nm = self::_GetInt4d($recordData, 4);					// offset: 4; size: 4; number of following strings ($nm)
+		$pos += 4;							// offset: 0; size: 4; total number of strings in the workbook
+		$nm = self::_GetInt4d($recordData, 4);				// offset: 4; size: 4; number of following strings ($nm)
 		$pos += 4;
 		
-		for ($i = 0; $i < $nm; ++$i) {							// loop through the Unicode strings (16-bit length)
+		for ($i = 0; $i < $nm; ++$i) {					// loop through the Unicode strings (16-bit length)
 			$numChars = self::_GetInt2d($recordData, $pos);		// number of characters in the Unicode string
 			$pos += 2;
 			
-			$optionFlags = ord($recordData{$pos});				// option flags
+			$optionFlags = ord($recordData{$pos});			// option flags
 			++$pos;
 			
 			$isCompressed = (($optionFlags & 0x01) == 0) ;		// bit: 0; mask: 0x01; 0 = compressed; 1 = uncompressed
@@ -678,22 +678,22 @@ class Spreadsheet_Excel_Reader {
 				$pos += 4;
 			}
 	
-			$len = ($isCompressed) ? $numChars : $numChars * 2;				// expected byte length of character array if not split
+			$len = ($isCompressed) ? $numChars : $numChars * 2;			// expected byte length of character array if not split
 	
-			foreach ($spliceOffsets as $spliceOffset) {						// look up limit position
-				if ($pos <= $spliceOffset) {								// it can happen that the string is empty, therefore we need. <= and not just <
+			foreach ($spliceOffsets as $spliceOffset) {				// look up limit position
+				if ($pos <= $spliceOffset) {					// it can happen that the string is empty, therefore we need. <= and not just <
 					$limitpos = $spliceOffset;
 					break;
 				}
 			}
 	
 			if ($pos + $len <= $limitpos) {
-				$retstr = substr($recordData, $pos, $len);					// character array is not split between records
+				$retstr = substr($recordData, $pos, $len);			// character array is not split between records
 				$pos += $len;
 			} else {
 				$retstr = substr($recordData, $pos, $limitpos - $pos);		// character array is split between records. first part of character array
 				$bytesRead = $limitpos - $pos;
-				$charsLeft = $numChars - (($isCompressed) ? $bytesRead : ($bytesRead / 2));		// remaining characters in Unicode string
+				$charsLeft = $numChars - (($isCompressed) ? $bytesRead : ($bytesRead / 2));	// remaining characters in Unicode string
 				$pos = $limitpos;
 	
 				// keep reading the characters
@@ -751,11 +751,11 @@ class Spreadsheet_Excel_Reader {
 			}
 			
 			$retstr = self::_encodeUTF16($retstr, $isCompressed);	// convert to UTF-8
-			$fmtRuns = array();										// read additional Rich-Text information, if any
+			$fmtRuns = array();								// read additional Rich-Text information, if any
 			if ($hasRichText) {
 				// list of formatting runs
 				for ($j = 0; $j < $formattingRuns; ++$j) {
-					$charPos = self::_GetInt2d($recordData, $pos + $j * 4);			// first formatted character; zero-based
+					$charPos = self::_GetInt2d($recordData, $pos + $j * 4);		// first formatted character; zero-based
 					$fontIndex = self::_GetInt2d($recordData, $pos + 2 + $j * 4);	// index to font record
 					$fmtRuns[] = array(
 						'charPos' => $charPos,
@@ -1058,8 +1058,8 @@ class Spreadsheet_Excel_Reader {
 	private static function _mapErrorCode($subData)	{
 		switch ($subData) {
 			case 0x00: return '#NULL!';		break;
-			case 0x07: return '#DIV/0!';	break;
-			case 0x0F: return '#VALUE!';	break;
+			case 0x07: return '#DIV/0!';		break;
+			case 0x0F: return '#VALUE!';		break;
 			case 0x17: return '#REF!';		break;
 			case 0x1D: return '#NAME?';		break;
 			case 0x24: return '#NUM!';		break;
@@ -1114,11 +1114,11 @@ class Spreadsheet_Excel_Reader {
 			case 1361:	return 'CP1361';			break;	//	ANSI Korean (Johab)
 			case 10000:	return 'MAC';				break;	//	Apple Roman
 			case 10006:	return 'MACGREEK';			break;	//	Macintosh Greek
-			case 10007:	return 'MACCYRILLIC';		break;	//	Macintosh Cyrillic
-			case 10008: return 'CP936';             break;  //  Macintosh - Simplified Chinese (GB 2312)
-			case 10029:	return 'MACCENTRALEUROPE';	break;	//	Macintosh Central Europe
-			case 10079: return 'MACICELAND';		break;	//	Macintosh Icelandic
-			case 10081: return 'MACTURKISH';		break;	//	Macintosh Turkish
+			case 10007:	return 'MACCYRILLIC';			break;	//	Macintosh Cyrillic
+			case 10008: return 'CP936';             		break;  //  Macintosh - Simplified Chinese (GB 2312)
+			case 10029:	return 'MACCENTRALEUROPE';		break;	//	Macintosh Central Europe
+			case 10079: return 'MACICELAND';			break;	//	Macintosh Icelandic
+			case 10081: return 'MACTURKISH';			break;	//	Macintosh Turkish
 			case 32768:	return 'MAC';				break;	//	Apple Roman
 			//case 32769:	throw new PHPExcel_Exception('Code page 32769 not supported.');		break;	//	ANSI Latin I (BIFF2-BIFF3)
 			case 65000:	return 'UTF-7';				break;	//	Unicode (UTF-7)
@@ -1159,7 +1159,7 @@ class Spreadsheet_Excel_Reader {
 	private static function _readUnicodeStringShort($subData) {
 		$characterCount = ord($subData[0]);		// offset: 0: size: 1; length of the string (character count)
 		$string = self::_readUnicodeString(substr($subData, 1), $characterCount);
-		$string['size'] += 1;					// add 1 for the string length
+		$string['size'] += 1;				// add 1 for the string length
 	
 		return $string;
 	}
@@ -1213,7 +1213,7 @@ class Spreadsheet_Excel_Reader {
 	 */
 	private static function _readUnicodeString($subData, $characterCount) {
 		$isCompressed = !((0x01 & ord($subData[0])) >> 0);		// bit: 0; mask: 0x01; character compression (0 = compressed 8-bit, 1 = uncompressed 16-bit)
-		$hasAsian = (0x04) & ord($subData[0]) >> 2;				// bit: 2; mask: 0x04; Asian phonetic settings
+		$hasAsian = (0x04) & ord($subData[0]) >> 2;			// bit: 2; mask: 0x04; Asian phonetic settings
 		$hasRichText = (0x08) & ord($subData[0]) >> 3;			// bit: 3; mask: 0x08; Rich-Text settings
 	
 		// offset: 1: size: var; character array
