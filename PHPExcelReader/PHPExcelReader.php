@@ -3,7 +3,7 @@
  * PHPExcelReader class
  *
  * @version 1.0.0
- * @author Janson
+ * @author Janson Leung
  */
 class PHPExcelReader implements SeekableIterator, Countable {
 	const TYPE_XLSX = 'XLSX';
