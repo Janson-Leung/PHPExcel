@@ -8,23 +8,23 @@ class PHPExcel_Shared_OLERead {
 	
 	const IDENTIFIER_OLE 					= IDENTIFIER_OLE;	// OLE identifier
 	const BIG_BLOCK_SIZE					= 0x200;
-	const SMALL_BLOCK_SIZE					= 0x40;				// Size of a short sector = 64 bytes
-	const PROPERTY_STORAGE_BLOCK_SIZE		= 0x80;				// Size of a directory entry always = 128 bytes
-	const SMALL_BLOCK_THRESHOLD				= 0x1000;			// Minimum size of a standard stream = 4096 bytes, streams smaller than this are stored as short streams
+	const SMALL_BLOCK_SIZE					= 0x40;			// Size of a short sector = 64 bytes
+	const PROPERTY_STORAGE_BLOCK_SIZE			= 0x80;			// Size of a directory entry always = 128 bytes
+	const SMALL_BLOCK_THRESHOLD				= 0x1000;		// Minimum size of a standard stream = 4096 bytes, streams smaller than this are stored as short streams
 	
 	// header offsets
-	const NUM_BIG_BLOCK_DEPOT_BLOCKS_POS	= 0x2c;
+	const NUM_BIG_BLOCK_DEPOT_BLOCKS_POS			= 0x2c;
 	const ROOT_START_BLOCK_POS				= 0x30;
-	const SMALL_BLOCK_DEPOT_BLOCK_POS		= 0x3c;
+	const SMALL_BLOCK_DEPOT_BLOCK_POS			= 0x3c;
 	const EXTENSION_BLOCK_POS				= 0x44;
-	const NUM_EXTENSION_BLOCK_POS			= 0x48;
-	const BIG_BLOCK_DEPOT_BLOCKS_POS		= 0x4c;
+	const NUM_EXTENSION_BLOCK_POS				= 0x48;
+	const BIG_BLOCK_DEPOT_BLOCKS_POS			= 0x4c;
 	
 	// property storage offsets (directory offsets)
 	const SIZE_OF_NAME_POS					= 0x40;
-	const TYPE_POS							= 0x42;
+	const TYPE_POS						= 0x42;
 	const START_BLOCK_POS					= 0x74;
-	const SIZE_POS							= 0x78;
+	const SIZE_POS						= 0x78;
 	
 	public $error = false;
 	public $workbook = null;
@@ -163,22 +163,22 @@ class PHPExcel_Shared_OLERead {
 	
 		$entryLen = strlen($this->entry);		// loop through entires, each entry is 128 bytes
 		while ($offset < $entryLen) {
-			$data = substr($this->entry, $offset, self::PROPERTY_STORAGE_BLOCK_SIZE);							// entry data (128 bytes)
+			$data = substr($this->entry, $offset, self::PROPERTY_STORAGE_BLOCK_SIZE);				// entry data (128 bytes)
 			$nameSize = ord($data[self::SIZE_OF_NAME_POS]) | (ord($data[self::SIZE_OF_NAME_POS + 1]) << 8);		// size in bytes of name
 			$name = str_replace("\x00", "", substr($data, 0, $nameSize));
 			$this->props[] = array (
 				'name' 		 =>	 $name,
-				'type' 		 =>	 ord($data[self::TYPE_POS]),					// type of entry
+				'type' 		 =>	 ord($data[self::TYPE_POS]),			// type of entry
 				'size' 		 =>	 self::_GetInt4d($data, self::SIZE_POS),
 				'startBlock' =>	 self::_GetInt4d($data, self::START_BLOCK_POS)
 			);
 	
-			$upName = strtoupper($name);										// tmp helper to simplify checks
+			$upName = strtoupper($name);							// tmp helper to simplify checks
 			if (($upName === 'WORKBOOK') || ($upName === 'BOOK')) {				// Workbook directory entry (BIFF5 uses Book, BIFF8 uses Workbook)
 				$this->workbook = count($this->props) - 1;
 			}
 			else if ( $upName === 'ROOT ENTRY' || $upName === 'R') {
-				$this->rootentry = count($this->props) - 1;						// Root entry
+				$this->rootentry = count($this->props) - 1;				// Root entry
 			}
 			
 			if ($name == chr(5) . 'SummaryInformation') {
@@ -186,7 +186,7 @@ class PHPExcel_Shared_OLERead {
 			}
 	
 			if ($name == chr(5) . 'DocumentSummaryInformation') {
-				$this->documentSummaryInformation = count($this->props) - 1;	// Additional Document Summary information
+				$this->documentSummaryInformation = count($this->props) - 1;		// Additional Document Summary information
 			}
 	
 			$offset += self::PROPERTY_STORAGE_BLOCK_SIZE;
