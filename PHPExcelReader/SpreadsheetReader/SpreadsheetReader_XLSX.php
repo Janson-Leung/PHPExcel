@@ -1194,8 +1194,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable {
 	}
 
 	/**
-	 * Helper function for greatest common divisor calculation in case GMP extension is
-	 *	not enabled
+	 * Helper function for greatest common divisor calculation in case GMP extension is not enabled
 	 *
 	 * @param int Number #1
 	 * @param int Number #2
