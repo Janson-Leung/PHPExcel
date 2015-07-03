@@ -68,9 +68,20 @@ class SpreadsheetReader_XLS implements Iterator, Countable {
 	 */
 	public function next() {
 		$this->currentRow = array();
+		if( ! $this->sheetInfo) {
+			$this->Sheets();
+		}
 		
 		$this->index++;
-		$this->currentRow = $this->handle->getCell();
+		$cell = $this->handle->getCell();
+		if(count($cell) < $this->sheetInfo['totalColumns']){
+			for($i = 0; $i < $this->sheetInfo['totalColumns']; $i++) {
+				$this->currentRow[$i] = isset($cell[$i]) ? $cell[$i] : '';
+			}
+		}
+		else{
+			$this->currentRow = $cell;
+		}
 		
 		return $this->currentRow;
 	}
