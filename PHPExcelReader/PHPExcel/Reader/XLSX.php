@@ -1,6 +1,6 @@
 <?php
 
-class SpreadsheetReader_XLSX implements Iterator, Countable {
+class PHPExcel_Reader_XLSX implements Iterator, Countable {
 	const CELL_TYPE_BOOL = 'b';
 	const CELL_TYPE_NUMBER = 'n';
 	const CELL_TYPE_ERROR = 'e';
@@ -111,7 +111,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable {
 		11 => '0.00E+00',
 		12 => '# ?/?',
 		13 => '# ??/??',
-		14 => 'mm-dd-yy',
+		14 => 'yyyy/m/d',
 		15 => 'd-mmm-yy',
 		16 => 'd-mmm',
 		17 => 'mmm-yy',
@@ -119,21 +119,30 @@ class SpreadsheetReader_XLSX implements Iterator, Countable {
 		19 => 'h:mm:ss AM/PM',
 		20 => 'h:mm',
 		21 => 'h:mm:ss',
-		22 => 'm/d/yy h:mm',
+		22 => 'yyyy/m/d h:mm',
+		
+		31 => 'yyyy年m月d日',
+		32 => 'h时mmi分',
+		33 => 'h时mmi分ss秒',
 
 		37 => '#,##0 ;(#,##0)',
 		38 => '#,##0 ;[Red](#,##0)',
 		39 => '#,##0.00;(#,##0.00)',
 		40 => '#,##0.00;[Red](#,##0.00)',
 
+		44 => '_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)',
 		45 => 'mm:ss',
 		46 => '[h]:mm:ss',
-		47 => 'mmss.0',
+		47 => 'mm:ss.0',
 		48 => '##0.0E+0',
 		49 => '@',
 
+		55 => 'AM/PM h时mmi分',
+		56 => 'AM/PM h时mmi分ss秒',
+		58 => 'm月d日',
+
 		// CHT & CHS
-		27 => '[$-404]e/m/d',
+		27 => 'yyyy年m月',
 		30 => 'm/d/yy',
 		36 => '[$-404]e/m/d',
 		50 => '[$-404]e/m/d',
@@ -142,7 +151,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable {
 		// THA
 		59 => 't0',
 		60 => 't0.00',
-		61 =>'t#,##0',
+		61 => 't#,##0',
 		62 => 't#,##0.00',
 		67 => 't0%',
 		68 => 't0.00%',
@@ -155,12 +164,14 @@ class SpreadsheetReader_XLSX implements Iterator, Countable {
 		'All' => array(
 			'\\' => '',
 			'am/pm' => 'A',
+			'e' => 'Y',
 			'yyyy' => 'Y',
 			'yy' => 'y',
 			'mmmmm' => 'M',
 			'mmmm' => 'F',
 			'mmm' => 'M',
 			':mm' => ':i',
+			'mmi'	=> 'i',
 			'mm' => 'm',
 			'm' => 'n',
 			'dddd' => 'l',
@@ -176,13 +187,13 @@ class SpreadsheetReader_XLSX implements Iterator, Countable {
 		),
 		'12H' => array(
 			'hh' => 'h',
-			'h' => 'G'
+			'h' => 'g'
 		)
 	);
 
 	private static $BaseDate = false;
 	private static $DecimalSeparator = '.';
-	private static $ThousandSeparator = '';
+	private static $ThousandSeparator = ',';
 	private static $CurrencyCode = '';
 
 	/**
@@ -274,7 +285,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable {
 					}
 				}
 			}
-			
+
 			if ($this -> StylesXML -> numFmts && $this -> StylesXML -> numFmts -> numFmt)
 			{
 				foreach ($this -> StylesXML -> numFmts -> numFmt as $Index => $NumFmt)
@@ -650,7 +661,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable {
 			}
 			elseif (isset($this -> Formats[$Index]))
 			{
-				$Format['Code'] = $this -> Formats[$Index];
+				$Format['Code'] = str_replace('"', '', $this -> Formats[$Index]);
 			}
 
 			// Format code found, now parsing the format
@@ -658,7 +669,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable {
 			{
 				$Sections = explode(';', $Format['Code']);
 				$Format['Code'] = $Sections[0];
-				
+
 				switch (count($Sections))
 				{
 					case 2:
@@ -691,7 +702,7 @@ class SpreadsheetReader_XLSX implements Iterator, Countable {
 			{
 				$Format['Type'] = 'Percentage';
 			}
-			elseif (preg_match('/^(\[\$[A-Z]*-[0-9A-F]*\])*[hmsdy]/i', $Format['Code']))
+			elseif (preg_match('/(\[\$[A-Z]*-[0-9A-F]*\])*[hmsdy]/i', $Format['Code']))
 			{
 				$Format['Type'] = 'DateTime';
 
@@ -788,10 +799,10 @@ class SpreadsheetReader_XLSX implements Iterator, Countable {
 		// Applying format to value
 		if ($Format)
 		{
-    		if ($Format['Code'] == '@')
-    		{
-        		return (string)$Value;
-    		}
+			if ($Format['Code'] == '@')
+			{
+				return (string)$Value;
+			}
 			// Percentages
 			elseif ($Format['Type'] == 'Percentage')
 			{

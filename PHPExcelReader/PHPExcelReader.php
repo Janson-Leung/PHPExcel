@@ -5,20 +5,21 @@
  * @version 1.0.0
  * @author Janson Leung
  */
+
+/** PHPExcel root directory */
+if ( ! defined('PHPEXCEL_ROOT')) {
+	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/');
+	require(PHPEXCEL_ROOT . 'PHPExcel/Autoloader.php');
+}
+
 class PHPExcelReader implements SeekableIterator, Countable {
 	const TYPE_XLSX = 'XLSX';
 	const TYPE_XLS = 'XLS';
 	const TYPE_CSV = 'CSV';
-	const TYPE_ODS = 'ODS';
 
-	private $options = array(
-		'Delimiter' => '',
-		'Enclosure' => '"'
-	);
-
+	private $handle;
+	private $type;
 	private $index = 0;
-	private $handle = array();
-	private $type = false;
 
 	/**
 	 * @param string Path to file
@@ -27,7 +28,7 @@ class PHPExcelReader implements SeekableIterator, Countable {
 	 */
 	public function __construct($filePath, $originalFileName = false, $mimeType = false) {
 		if ( ! is_readable($filePath)) {
-			throw new Exception('SpreadsheetReader: File (' . $filePath . ') not readable');
+			throw new Exception('PHPExcel_Reader: File (' . $filePath . ') not readable');
 		}
 
 		$defaultTimeZone = @date_default_timezone_get();
@@ -38,10 +39,10 @@ class PHPExcelReader implements SeekableIterator, Countable {
 		// Checking the other parameters for correctness
 		// This should be a check for string but we're lenient
 		if ( ! empty($originalFileName) && ! is_scalar($originalFileName)) {
-			throw new Exception('SpreadsheetReader: Original file (2nd parameter) path is not a string or a scalar value.');
+			throw new Exception('PHPExcel_Reader: Original file (2nd parameter) is not a string or a scalar value.');
 		}
 		if ( ! empty($mimeType) && ! is_scalar($mimeType)) {
-			throw new Exception('SpreadsheetReader: Mime type (3nd parameter) path is not a string or a scalar value.');
+			throw new Exception('PHPExcel_Reader: Mime type (3nd parameter) is not a string or a scalar value.');
 		}
 
 		// 1. Determine type
@@ -52,46 +53,49 @@ class PHPExcelReader implements SeekableIterator, Countable {
 		$Extension = strtolower(pathinfo($originalFileName, PATHINFO_EXTENSION));
 		if($mimeType) {
 			switch ($mimeType) {
-				case 'text/csv':
+				case 'application/octet-stream':
+					$this->type = $Extension == 'xlsx' ? self::TYPE_XLSX : self::TYPE_CSV;
+					break;
+				case 'text/x-comma-separated-values':
 				case 'text/comma-separated-values':
+				case 'application/x-csv':
+				case 'text/x-csv':
+				case 'text/csv':
+				case 'application/csv':
+				case 'application/vnd.msexcel':
 				case 'text/plain':
 					$this->type = self::TYPE_CSV;
 					break;
-				case 'application/vnd.ms-excel':
 				case 'application/msexcel':
 				case 'application/x-msexcel':
 				case 'application/x-ms-excel':
-				case 'application/vnd.ms-excel':
 				case 'application/x-excel':
 				case 'application/x-dos_ms_excel':
 				case 'application/xls':
-				case 'application/xlt':
 				case 'application/x-xls':
-					// Excel does weird stuff
-					if (in_array($Extension, array('csv', 'tsv', 'txt'))) {
-						$this->type = self::TYPE_CSV;
-					}
-					else {
-						$this->type = self::TYPE_XLS;
-					}
+				case 'application/download':
+				case 'application/vnd.ms-office':
+				case 'application/msword':
+				case 'application/xlt':
+					$this->type = self::TYPE_XLS;
 					break;
-				case 'application/vnd.oasis.opendocument.spreadsheet':
-				case 'application/vnd.oasis.opendocument.spreadsheet-template':
-					$this->type = self::TYPE_ODS;
+				case 'application/vnd.ms-excel':
+				case 'application/excel':
+					$this->type = $Extension == 'csv' ? self::TYPE_CSV : self::TYPE_XLS;
 					break;
 				case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
 				case 'application/vnd.openxmlformats-officedocument.spreadsheetml.template':
+				case 'application/zip':
+				case 'application/msword':
+				case 'application/x-zip':
 				case 'application/xlsx':
 				case 'application/xltx':
 					$this->type = self::TYPE_XLSX;
 					break;
-				case 'application/xml':
-					// Excel 2004 xml format uses this
-					break;
 			}
 		}
 
-		if ( ! $this->type)	{
+		if ( ! $this->type) {
 			switch ($Extension) {
 				case 'xlsx':
 				case 'xltx': // XLSX template
@@ -103,10 +107,6 @@ class PHPExcelReader implements SeekableIterator, Countable {
 				case 'xlt':
 					$this->type = self::TYPE_XLS;
 					break;
-				case 'ods':
-				case 'odt':
-					$this->type = self::TYPE_ODS;
-					break;
 				default:
 					$this->type = self::TYPE_CSV;
 					break;
@@ -115,8 +115,7 @@ class PHPExcelReader implements SeekableIterator, Countable {
 
 		// Pre-checking XLS files, in case they are renamed CSV or XLSX files
 		if ($this->type == self::TYPE_XLS) {
-			self::Load(self::TYPE_XLS);
-			$this->handle = new SpreadsheetReader_XLS($filePath);
+			$this->handle = new PHPExcel_Reader_XLS($filePath);
 			if ($this->handle->error) {
 				$this->handle->__destruct();
 
@@ -133,31 +132,25 @@ class PHPExcelReader implements SeekableIterator, Countable {
 		// 2. Create handle
 		switch ($this->type) {
 			case self::TYPE_XLSX:
-				self::Load(self::TYPE_XLSX);
-				$this->handle = new SpreadsheetReader_XLSX($filePath);
+				$this->handle = new PHPExcel_Reader_XLSX($filePath);
 				break;
 			case self::TYPE_CSV:
-				self::Load(self::TYPE_CSV);
-				$this->handle = new SpreadsheetReader_CSV($filePath, $this->options, 'GBK');
+				$this->handle = new PHPExcel_Reader_CSV($filePath, 1);
 				break;
 			case self::TYPE_XLS:
 				// Everything already happens above
 				break;
-			case self::TYPE_ODS:
-				self::Load(self::TYPE_ODS);
-				$this->handle = new SpreadsheetReader_ODS($filePath, $this->options);
-				break;
 		}
 	}
-	
+
 	/**
 	 * get the type of file
 	 * @return string
 	 */
-	public function getType() {
+	public function getFileType() {
 		return $this->type;
 	}
-	
+
 	/**
 	 * Gets information about separate sheets in the given file
 	 *
@@ -182,25 +175,6 @@ class PHPExcelReader implements SeekableIterator, Countable {
 	}
 
 	/**
-	 * Autoloads the required class for the particular spreadsheet type
-	 *
-	 * @param TYPE_* Spreadsheet type, one of TYPE_* constants of this class
-	 */
-	private static function Load($type) {
-		if ( ! in_array($type, array(self::TYPE_XLSX, self::TYPE_XLS, self::TYPE_CSV, self::TYPE_ODS))) {
-			throw new Exception('SpreadsheetReader: Invalid type (' . $type . ')');
-		}
-
-		// 2nd parameter is to prevent autoloading for the class.
-		// If autoload works, the require line is unnecessary, if it doesn't, it ends badly.
-		if ( ! class_exists('SpreadsheetReader_' . $type, false)) {
-			require(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'SpreadsheetReader' . DIRECTORY_SEPARATOR . 'SpreadsheetReader_' . $type . '.php');
-		}
-	}
-
-	// !Iterator interface methods
-
-	/** 
 	 * Rewind the Iterator to the first element.
 	 * Similar to the reset() function for arrays in PHP
 	 */ 
@@ -281,7 +255,7 @@ class PHPExcelReader implements SeekableIterator, Countable {
 	 */
 	public function seek($position)	{
 		if ( ! $this->handle) {
-			throw new OutOfBoundsException('SpreadsheetReader: No file opened');
+			throw new OutOfBoundsException('PHPExcel_Reader: No file opened');
 		}
 
 		$Currentindex = $this->handle->key();
@@ -295,7 +269,7 @@ class PHPExcelReader implements SeekableIterator, Countable {
 			}
 
 			if ( ! $this->handle->valid()) {
-				throw new OutOfBoundsException('SpreadsheetError: position ' . $position . ' not found');
+				throw new OutOfBoundsException('PHPExcel_Reader: position ' . $position . ' not found');
 			}
 		}
 
