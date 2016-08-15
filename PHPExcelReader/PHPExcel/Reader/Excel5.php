@@ -589,6 +589,30 @@ class PHPExcel_Reader_Excel5 {
 			return pow($key,$value);
 		}
 	}
+	
+	//
+	//	Private method to return an array of the factors of the input value
+	//
+	private static function _factors($value) {
+		$startVal = floor(sqrt($value));
+
+		$factorArray = array();
+		for ($i = $startVal; $i > 1; --$i) {
+			if (($value % $i) == 0) {
+				$factorArray = array_merge($factorArray,self::_factors($value / $i));
+				$factorArray = array_merge($factorArray,self::_factors($i));
+				if ($i <= sqrt($value)) {
+					break;
+				}
+			}
+		}
+		if (!empty($factorArray)) {
+			rsort($factorArray);
+			return $factorArray;
+		} else {
+			return array((integer) $value);
+		}
+	}
 
 	private static function flattenArray($array) {
 		if (!is_array($array)) {
