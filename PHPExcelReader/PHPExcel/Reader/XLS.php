@@ -62,8 +62,9 @@ class PHPExcel_Reader_XLS implements Iterator, Countable {
 	 */
 	public function current() {
 		if ($this->index == 0 && ! isset($this->currentRow)) {
+			$this->rewind();
 			$this->next();
-			$this->index = 0;
+			$this->Index--;
 		}
 
 		return $this->currentRow;
@@ -99,12 +100,12 @@ class PHPExcel_Reader_XLS implements Iterator, Countable {
 	 * Check if there is a current element after calls to rewind() or next().
 	 * @return boolean
 	 */
-	public function valid()	{
+	public function valid() {
 		if ($this->error) {
 			return false;
 		}
 
-		return ($this->index < $this->count());
+		return ($this->index <= $this->count());
 	}
 
 	/**

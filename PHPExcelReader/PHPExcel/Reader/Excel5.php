@@ -589,7 +589,7 @@ class PHPExcel_Reader_Excel5 {
 			return pow($key,$value);
 		}
 	}
-	
+
 	//
 	//	Private method to return an array of the factors of the input value
 	//
