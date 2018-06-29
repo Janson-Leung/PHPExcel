@@ -1,35 +1,107 @@
-**PHPExcelReader** is a lightweight Excel file reading class, support the CSV, XLS, XLSX file. It can read 
-line by line as needed.
+# phpexcel
+A lightweight PHP library for reading spreadsheet files
+  - Based on Generator、SeekableIterator and Countable
+  - Support for reading by line, read data only
 
-### Requirements:
-*  PHP 5.3.0 or newer
-*  PHP must have Zip file support (see http://php.net/manual/en/zip.installation.php)
+### Requirements
 
-### Usage:
+  - PHP 7.0 or higher
 
-All data is read from the file sequentially, with each row being returned as a numeric array.
-This is about the easiest way to read a file:
+### Installation
 
-	<?php
-		require 'PHPExcelReader/PHPExcelReader.php';
+    composer require ecweb/phpexcel
 
-		try{
-			$Reader = new PHPExcelReader('test.xls');
-			$total = $Reader->count();			// get the total rows of records
-			//$current = $Reader->current();	// get the current row data
-		
-			/*
-			$Reader->seek(4);					// skip to the 4th row 
-			$row = $Reader->current();			// get the 4th row data
-			*/
-			
-			/*
-			foreach($Reader as $key => $row){
-				$data[] = $row;					// loop obtain row data
-			}
-			*/
-			
-			var_dump($total);
-		} catch (Exception $e) {
-			die($e->getMessage());
-		}
+## Usage
+
+### csv
+
+```
+// Simple setting 
+$reader = Asan\PHPExcel\Excel::load('files/02.csv', 'GBK');
+
+// Flexible setting
+$reader = Asan\PHPExcel\Excel::load('files/01.csv', function(Asan\PHPExcel\Reader\Csv $reader) {
+    // Set row limit
+    $reader->setRowLimit(10);
+
+    // Set column limit
+    $reader->setColumnLimit(10);
+
+    // Ignore emoty row
+    $reader->ignoreEmptyRow(true);
+
+    // Set encoding
+    //$reader->setInputEncoding('GBK');
+
+    // Set delimiter
+    $reader->setDelimiter("\t");
+}, 'GBK');
+
+// skip to row 50 
+$reader->seek(50);
+
+// Get the current row data
+$current = $reader->current();
+
+// Get row count
+$count = $reader->count();
+```
+
+### xls
+
+```
+$reader = Asan\PHPExcel\Excel::load('files/01.xls', function(Asan\PHPExcel\Reader\Xls $reader) {
+    // Set row limit
+    $reader->setRowLimit(10);
+
+    // Set column limit
+    $reader->setColumnLimit(10);
+
+    // Ignore emoty row
+    $reader->ignoreEmptyRow(true);
+
+    // Select sheet index
+    $reader->setSheetIndex(1);
+});
+
+// skip to row 50 
+$reader->seek(50);
+
+// Get the current row data
+$current = $reader->current();
+
+// Get row count
+$count = $reader->count();
+
+// Get all sheets info
+$sheets = $reader->sheets();
+```
+
+### xlsx
+```
+$reader = Asan\PHPExcel\Excel::load('files/01.xlsx', function(Asan\PHPExcel\Reader\Xlsx $reader) {
+    // Set row limit
+    $reader->setRowLimit(10);
+
+    // Set column limit
+    $reader->setColumnLimit(10);
+
+    // Ignore emoty row
+    $reader->ignoreEmptyRow(true);
+
+    // Select sheet index
+    $reader->setSheetIndex(0);
+});
+
+// skip to row 50 
+$reader->seek(50);
+
+// Get the current row data
+$current = $reader->current();
+
+// Get row count
+$count = $reader->count();
+
+// Get all sheets info
+$sheets = $reader->sheets();
+```
