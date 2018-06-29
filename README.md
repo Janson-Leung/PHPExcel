@@ -9,7 +9,7 @@ A lightweight PHP library for reading spreadsheet files
 
 ### Installation
 
-    composer require ecweb/phpexcel
+    composer require asan/phpexcel
 
 ## Usage
 
