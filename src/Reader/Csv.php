@@ -61,12 +61,17 @@ class Csv extends BaseReader {
      * @return $this
      */
     public function load($file) {
+        $lineEnding = ini_get('auto_detect_line_endings');
+        ini_set('auto_detect_line_endings', true);
+
         // Open file
         $this->openFile($file);
 
         $this->autoDetection();
 
         $this->generator = $this->makeGenerator();
+
+        ini_set('auto_detect_line_endings', $lineEnding);
 
         return $this;
     }
@@ -93,9 +98,6 @@ class Csv extends BaseReader {
      * @return \Generator
      */
     protected function makeGenerator($calculate = false) {
-        $lineEnding = ini_get('auto_detect_line_endings');
-        ini_set('auto_detect_line_endings', true);
-
         fseek($this->fileHandle, $this->start);
 
         $finish = 0;
@@ -134,8 +136,6 @@ class Csv extends BaseReader {
 
             yield $row;
         }
-
-        ini_set('auto_detect_line_endings', $lineEnding);
     }
 
     /**
