@@ -27,7 +27,7 @@ $reader = Asan\PHPExcel\Excel::load('files/01.csv', function(Asan\PHPExcel\Reade
     // Set column limit
     $reader->setColumnLimit(10);
 
-    // Ignore emoty row
+    // Ignore empty row
     $reader->ignoreEmptyRow(true);
 
     // Set encoding
@@ -57,7 +57,7 @@ $reader = Asan\PHPExcel\Excel::load('files/01.xls', function(Asan\PHPExcel\Reade
     // Set column limit
     $reader->setColumnLimit(10);
 
-    // Ignore emoty row
+    // Ignore empty row
     $reader->ignoreEmptyRow(true);
 
     // Select sheet index
@@ -86,7 +86,7 @@ $reader = Asan\PHPExcel\Excel::load('files/01.xlsx', function(Asan\PHPExcel\Read
     // Set column limit
     $reader->setColumnLimit(10);
 
-    // Ignore emoty row
+    // Ignore empty row
     $reader->ignoreEmptyRow(true);
 
     // Select sheet index
