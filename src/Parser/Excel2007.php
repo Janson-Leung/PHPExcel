@@ -13,6 +13,8 @@ use Asan\PHPExcel\Exception\ReaderException;
 class Excel2007 {
     const CELL_TYPE_SHARED_STR = 's';
 
+    public $xmlIndexAry = array();
+    public $xmlValueAry = array();
     /**
      * Temporary directory
      *
@@ -260,7 +262,9 @@ class Excel2007 {
      */
     protected function getSharedString($position) {
         $value = '';
-
+        if (isset($this->xmlValueAry[$position]) && $this->xmlValueAry[$position] !== true) {
+            return $this->xmlValueAry[$position];
+        }
         $file = 'xl/sharedStrings.xml';
         if ($this->sharedStringsXML === null) {
             $this->sharedStringsXML = new \XMLReader();
@@ -284,9 +288,14 @@ class Excel2007 {
                 } elseif ($position == $this->sharedStringsPosition && $nodeType == \XMLReader::END_ELEMENT) {
                     break;
                 }
-            } elseif ($name == 't' && $position == $this->sharedStringsPosition && $nodeType == \XMLReader::ELEMENT) {
-                $value .= trim($this->sharedStringsXML->readString());
+            } elseif ($name == 't' && $nodeType == \XMLReader::ELEMENT) {
+                if ($position == $this->sharedStringsPosition) {
+                    $value .= trim($this->sharedStringsXML->readString());
+                }
             }
+        }
+        if (isset($this->xmlValueAry[$position]) && $this->xmlValueAry[$position] === true) {
+            $this->xmlValueAry[$position] = $value;
         }
 
         return $value;
@@ -341,6 +350,48 @@ class Excel2007 {
             $this->tmpDir . '/xl/worksheets/sheet' . ($this->getSheetIndex() + 1) . '.xml',
             null, self::getLibXmlLoaderOptions()
         );
+        $this->preProcessWorksheetXML();
+        $this->worksheetXML->close();
+        $this->worksheetXML->open(
+            $this->tmpDir . '/xl/worksheets/sheet' . ($this->getSheetIndex() + 1) . '.xml',
+            null, self::getLibXmlLoaderOptions()
+        );
+    }
+
+    /**
+    * Pre process reference index
+    **/
+    protected function preProcessWorksheetXML ()
+    {
+        $this->xmlIndexAry = array();
+        while ($canRead = $this->worksheetXML->read()) {
+            $name = $this->worksheetXML->name;
+            $type = $this->worksheetXML->nodeType;
+
+            switch ($name) {
+                // Cell
+                case 'c':
+                    if ($type == \XMLReader::END_ELEMENT) {
+                        continue;
+                    }
+                    break;
+
+                // Cell value
+                case 'v':
+                case 'is':
+                    if ($type == \XMLReader::END_ELEMENT) {
+                        continue;
+                    }
+                    $value = $this->worksheetXML->readString();
+                    if (isset($this->xmlIndexAry[$value])) {
+                        $this->xmlValueAry[$value] = true;
+                    } else {
+                        $this->xmlIndexAry[$value] = true;
+                    }
+                    break;
+            }
+        }
+        unset($this->xmlIndexAry);
     }
 
     /**
@@ -416,8 +467,6 @@ class Excel2007 {
                     // Format value if necessary
                     if ($value !== '' && $styleId && isset($this->styleXfs[$styleId])) {
                         $value = $this->formatValue($value, $styleId);
-                    } elseif ($value && is_numeric($value)) {
-                        $value = (float)$value;
                     }
 
                     $row[$index] = $value;
