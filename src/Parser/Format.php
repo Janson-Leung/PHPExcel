@@ -198,17 +198,17 @@ class Format {
         // We also use the language construct isset() rather than the more costly strlen() function to match the length
         // of $pString for improved performance
         if (!isset($indexCache[$label])) {
-            if (!isset($label{0}) || isset($label{3})) {
+            if (!isset($label[0]) || isset($label[3])) {
                 throw new ParserException('Column string can not be empty or longer than 3 characters');
             }
 
-            if (!isset($label{1})) {
+            if (!isset($label[1])) {
                 $indexCache[$label] = $columnLookup[$label];
-            } elseif (!isset($label{2})) {
-                $indexCache[$label] = $columnLookup[$label{0}] * 26 + $columnLookup[$label{1}];
+            } elseif (!isset($label[2])) {
+                $indexCache[$label] = $columnLookup[$label[0]] * 26 + $columnLookup[$label[1]];
             } else {
-                $indexCache[$label] = $columnLookup[$label{0}] * 676 + $columnLookup[$label{1}] * 26
-                    + $columnLookup[$label{2}];
+                $indexCache[$label] = $columnLookup[$label[0]] * 676 + $columnLookup[$label[1]] * 26
+                    + $columnLookup[$label[2]];
             }
         }
 

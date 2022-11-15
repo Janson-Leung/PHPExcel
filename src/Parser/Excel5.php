@@ -612,7 +612,7 @@ class Excel5 {
         $this->pos += 4 + $length;
 
         // offset: 4; size: 1; sheet state
-        switch (ord($recordData{4})) {
+        switch (ord($recordData[4])) {
             case 0x00:
                 $sheetState = self::SHEETSTATE_VISIBLE;
                 break;
@@ -631,7 +631,7 @@ class Excel5 {
         }
 
         // offset: 5; size: 1; sheet type
-        $sheetType = ord($recordData{5});
+        $sheetType = ord($recordData[5]);
 
         // offset: 6; size: var; sheet name
         $name = '';
@@ -895,7 +895,7 @@ class Excel5 {
 
         // offset: 0; size: 2; 0 = base 1900, 1 = base 1904
         self::$excelBaseDate = Format::CALENDAR_WINDOWS_1900;
-        if (ord($recordData{0}) == 1) {
+        if (ord($recordData[0]) == 1) {
             self::$excelBaseDate = Format::CALENDAR_MAC_1904;
         }
     }
@@ -1276,16 +1276,16 @@ class Excel5 {
         $xfIndex = Format::getUInt2d($recordData, 4);
 
         // offset: 6; size: 8; result of the formula
-        if ((ord($recordData{6}) == 0) && (ord($recordData{12}) == 255) && (ord($recordData{13}) == 255)) {
+        if ((ord($recordData[6]) == 0) && (ord($recordData[12]) == 255) && (ord($recordData[13]) == 255)) {
             // read STRING record
             $value = $this->readString();
-        } elseif ((ord($recordData{6}) == 1) && (ord($recordData{12}) == 255) && (ord($recordData{13}) == 255)) {
+        } elseif ((ord($recordData[6]) == 1) && (ord($recordData[12]) == 255) && (ord($recordData[13]) == 255)) {
             // Boolean formula. Result is in +2; 0=false, 1=true
-            $value = (bool) ord($recordData{8});
-        } elseif ((ord($recordData{6}) == 2) && (ord($recordData{12}) == 255) && (ord($recordData{13}) == 255)) {
+            $value = (bool) ord($recordData[8]);
+        } elseif ((ord($recordData[6]) == 2) && (ord($recordData[12]) == 255) && (ord($recordData[13]) == 255)) {
             // Error formula. Error code is in +2
-            $value = self::mapErrorCode(ord($recordData{8}));
-        } elseif ((ord($recordData{6}) == 3) && (ord($recordData{12}) == 255) && (ord($recordData{13}) == 255)) {
+            $value = self::mapErrorCode(ord($recordData[8]));
+        } elseif ((ord($recordData[6]) == 3) && (ord($recordData[12]) == 255) && (ord($recordData[13]) == 255)) {
             // Formula result is a null string
             $value = '';
         } else {
@@ -1342,10 +1342,10 @@ class Excel5 {
         $xfIndex = Format::getUInt2d($recordData, 4);
 
         // offset: 6; size: 1; the boolean value or error value
-        $boolError = ord($recordData{6});
+        $boolError = ord($recordData[6]);
 
         // offset: 7; size: 1; 0=boolean; 1=error
-        $isError = ord($recordData{7});
+        $isError = ord($recordData[7]);
 
         switch ($isError) {
             case 0: // boolean
