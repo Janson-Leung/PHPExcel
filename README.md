@@ -15,7 +15,7 @@ A lightweight PHP library for reading spreadsheet files
 
 ### csv
 
-```
+```php
 // Simple setting 
 $reader = Asan\PHPExcel\Excel::load('files/02.csv', 'GBK');
 
@@ -49,7 +49,7 @@ $count = $reader->count();
 
 ### xls
 
-```
+```php
 $reader = Asan\PHPExcel\Excel::load('files/01.xls', function(Asan\PHPExcel\Reader\Xls $reader) {
     // Set row limit
     $reader->setRowLimit(10);
@@ -78,7 +78,7 @@ $sheets = $reader->sheets();
 ```
 
 ### xlsx
-```
+```php
 $reader = Asan\PHPExcel\Excel::load('files/01.xlsx', function(Asan\PHPExcel\Reader\Xlsx $reader) {
     // Set row limit
     $reader->setRowLimit(10);
