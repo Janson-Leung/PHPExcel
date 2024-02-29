@@ -1,20 +1,15 @@
 {
-    "name": "asan/phpexcel",
-    "description": "A lightweight PHP library for reading spreadsheet files",
-    "homepage": "https://github.com/Janson-Leung/PHPExcel",
+    "name": "hikaru/php-excel",
+    "description": "fork from asan/phpexcel and fix some excel2007 bug",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "Janson Leung",
-            "homepage": "https://github.com/Janson-Leung"
+            "name": "hikaruocean",
+            "email": "kenso0012@gmail.com"
         }
     ],
     "require": {
-        "php": ">=7.0"
-    },
-    "minimum-stability": "stable",
-    "autoload": {
-        "psr-4": {"Asan\\PHPExcel\\": "src/"}
+        "php": ">=7.0"	
     }
 }
